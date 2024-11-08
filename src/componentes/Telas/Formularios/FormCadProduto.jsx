@@ -3,7 +3,7 @@ import { Button, Spinner, Col, Form, InputGroup,
  } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { consultarCategoria } from '../../../servicos/servicoCategoria';
-import { gravarProduto } from '../../../servicos/servicoProduto';
+import { alterarProduto, gravarProduto } from '../../../servicos/servicoProduto';
 
 import toast, {Toaster} from 'react-hot-toast';
 
@@ -29,6 +29,8 @@ export default function FormCadProdutos(props) {
         
     },[]); //didMount
 
+    console.log(categorias);
+
     function selecionarCategoria(evento){
         setProduto({...produto, 
                        categoria:{
@@ -52,25 +54,31 @@ export default function FormCadProdutos(props) {
                     else{
                         toast.error(resultado.mensagem);
                     }
+                }).catch((erro) => {
+                    toast.error("Erro ao gravar produto: " + erro.message);
                 });
             }
             else {
-                //editar o produto
-                /*altera a ordem dos registros
-                props.setListaDeProdutos([...props.listaDeProdutos.filter(
-                    (item) => {
-                        return item.codigo !== produto.codigo;
+                alterarProduto(produto)
+                .then((resposta)=>{
+                    if (resposta.status){
+                        //não altera a ordem dos registros
+                        props.setListaDeProdutos(props.listaDeProdutos.map((item) => {
+                            if (item.codigo !== produto.codigo)
+                                return item;
+                            else
+                                return produto;
+                        }));
+                        //exibir tabela com o produto incluído
+                        props.setExibirTabela(true);
                     }
-                ), produto]);*/
-
-                //não altera a ordem dos registros
-                props.setListaDeProdutos(props.listaDeProdutos.map((item) => {
-                    if (item.codigo !== produto.codigo)
-                        return item
-                    else
-                        return produto
-                }));
-
+                    else{
+                        toast.error(resposta.mensagem);
+                    }
+                }).catch((erro) => {
+                    window.alert("Erro ao gravar produto: " + erro.message);
+                    console.log(erro.mensagem);
+                });
                 //voltar para o modo de inclusão
                 props.setModoEdicao(false);
                 props.setProdutoSelecionado({
@@ -80,7 +88,8 @@ export default function FormCadProdutos(props) {
                     precoVenda: 0,
                     qtdEstoque: 0,
                     urlImagem: "",
-                    dataValidade: ""
+                    dataValidade: "",
+                    categoria:""
                 });
                 props.setExibirTabela(true);
             }
@@ -221,7 +230,7 @@ export default function FormCadProdutos(props) {
                                  onChange={selecionarCategoria}>
                         {// criar em tempo de execução as categorias existentes no banco de dados
                             categorias.map((categoria) =>{
-                                return <option value={categoria.codigo}>
+                                return <option key={categoria.codigo} value={categoria.codigo}>
                                             {categoria.descricao}
                                        </option>
                             })

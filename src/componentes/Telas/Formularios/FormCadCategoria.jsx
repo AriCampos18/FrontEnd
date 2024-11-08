@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Container, Form, Row, Col, Button, FloatingLabel, Spinner } from 'react-bootstrap';
+import { Container, Form, Row, Col, Button, FloatingLabel } from 'react-bootstrap';
 
 export default function FormCadCategorias(props) {
     return (
@@ -44,6 +43,7 @@ export default function FormCadCategorias(props) {
                 </Row>
                 <Row>
                     <Col md={6} offset={5}>
+                        <Button type="submit" variant={"secondary"}>Submit</Button>
                         <Button type="button" variant={"secondary"}>Voltar</Button>
                     </Col>
                 </Row>
