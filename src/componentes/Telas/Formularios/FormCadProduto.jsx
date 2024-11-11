@@ -76,7 +76,7 @@ export default function FormCadProdutos(props) {
                         toast.error(resposta.mensagem);
                     }
                 }).catch((erro) => {
-                    window.alert("Erro ao gravar produto: " + erro.message);
+                    window.alert("Erro ao alterar produto: " + erro.message);
                     console.log(erro.mensagem);
                 });
                 //voltar para o modo de inclusão
@@ -215,7 +215,7 @@ export default function FormCadProdutos(props) {
                     <Form.Label>Válido até:</Form.Label>
                     <Form.Control
                         required
-                        type="text"
+                        type="date"
                         id="dataValidade"
                         name="dataValidade"
                         value={produto.dataValidade}
