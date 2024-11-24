@@ -29,8 +29,6 @@ export default function FormCadProdutos(props) {
         
     },[]); //didMount
 
-    console.log(categorias);
-
     function selecionarCategoria(evento){
         setProduto({...produto, 
                        categoria:{
@@ -230,7 +228,7 @@ export default function FormCadProdutos(props) {
                                  onChange={selecionarCategoria}>
                         {// criar em tempo de execução as categorias existentes no banco de dados
                             categorias.map((categoria) =>{
-                                return <option key={categoria.codigo} value={categoria.codigo}>
+                                return <option value={categoria.codigo}>
                                             {categoria.descricao}
                                        </option>
                             })

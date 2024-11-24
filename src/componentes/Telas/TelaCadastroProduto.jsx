@@ -8,7 +8,7 @@ import { consultarProduto } from "../../servicos/servicoProduto";
 
 export default function TelaCadastroProduto(props) {
     const [exibirTabela, setExibirTabela] = useState(true);
-    const [listaDeProdutos, setListaDeProdutos] = useState([]);
+    /*const [listaDeProdutos, setListaDeProdutos] = useState([]);*/
     const [modoEdicao, setModoEdicao] = useState(false);
     //const [produtos, setProdutos] = useState([]);
     const [produtoSelecionado, setProdutoSelecionado] = useState({
@@ -22,12 +22,6 @@ export default function TelaCadastroProduto(props) {
         categoria: {}
 
     });
-
-    useEffect(()=>{
-        consultarProduto().then((lista)=>{
-            setListaDeProdutos(lista);
-        });
-    },[]); //listaVazia -> didMount
    
     return (
         <div>
@@ -39,14 +33,10 @@ export default function TelaCadastroProduto(props) {
                 </Alert>
                 {
                     exibirTabela ?
-                        <TabelaProdutos listaDeProdutos={listaDeProdutos}
-                                        setListaDeProdutos={setListaDeProdutos} 
-                                        setExibirTabela={setExibirTabela}
+                        <TabelaProdutos setExibirTabela={setExibirTabela}
                                         setModoEdicao={setModoEdicao}
                                         setProdutoSelecionado={setProdutoSelecionado} /> :
-                        <FormCadProdutos listaDeProdutos={listaDeProdutos}
-                                         setListaDeProdutos={setListaDeProdutos}
-                                         setExibirTabela={setExibirTabela}
+                        <FormCadProdutos setExibirTabela={setExibirTabela}
                                          produtoSelecionado={produtoSelecionado}
                                          setProdutoSelecionado={setProdutoSelecionado}
                                          modoEdicao={modoEdicao}

@@ -5,6 +5,8 @@ import Tela404 from "./componentes/Telas/Tela404";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import TelaLogin from "./componentes/Telas/TelaLogin";
 import { useState, createContext } from "react";
+import store from './redux/store';
+import { Provider } from "react-redux";
 
 export const ContextoUsuario=createContext();
 
@@ -25,6 +27,7 @@ function App() {
   else{
     return (
       <div className="App">
+        <Provider store={store}>
         <ContextoUsuario.Provider value ={{usuario,setUsuario}}>
           <BrowserRouter>
             { //A ordem das rotas é importante 
@@ -37,6 +40,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </ContextoUsuario.Provider>
+        </Provider>
       </div>
     );
   }

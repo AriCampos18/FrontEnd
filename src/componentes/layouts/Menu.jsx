@@ -41,7 +41,7 @@ export default function Menu(props) {
                                 "logado":false
                             });
                         }}>Sair</Nav.Link>
-                        <Nav.Link>Usuario logado:</Nav.Link>
+                        <Nav.Link>Usuario logado:{usuario.usuario}</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
