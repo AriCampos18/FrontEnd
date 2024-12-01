@@ -1,5 +1,4 @@
 import { Button, Container, Table, Spinner, Alert} from "react-bootstrap";
-import { excluirProduto } from "../../../servicos/servicoProduto";
 import { useSelector, useDispatch } from "react-redux";
 import { buscarProdutos, apagarProduto } from "../../../redux/produtoReducer";
 import { useEffect } from "react";
@@ -9,7 +8,7 @@ import ESTADO from "../../../redux/estado.js";
 export default function TabelaProdutos(props) {
 
     const {estado, mensagem, listaDeProdutos} = useSelector(state => state.produto);
-    const despachante = useDispatch();
+    const despachante = useDispatch(); //consegue enviar uma action ao estado a partir da interface
 
     useEffect(()=>{
         despachante(buscarProdutos());
@@ -17,13 +16,13 @@ export default function TabelaProdutos(props) {
 
     function editarProduto(produto){
         props.setModoEdicao(true);
-        props.setProdutoSelecionado(produto)
+        props.setProdutoSelecionado(produto);
         props.setExibirTabela(false);
     }
 
     function excluirProdutoFrontEnd(produto){
         if(window.confirm("Deseja realmente excluir o produto " + produto.descricao)){
-            despachante(apagarProduto(produto));
+            despachante(apagarProduto(produto)); //envia a action apagarProduto
         }
     }
 
@@ -36,9 +35,11 @@ export default function TabelaProdutos(props) {
         );
     }
     else if (estado === ESTADO.ERRO){
-        <div>
-            <Alert variant="danger">{ mensagem }</Alert>
-        </div>
+        return(
+            <div>
+                <Alert variant="danger">{ mensagem }</Alert>
+            </div>
+        );
     }
     else if (estado===ESTADO.OCIOSO){
 

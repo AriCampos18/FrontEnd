@@ -13,12 +13,12 @@ export async function gravarProduto(produto){
 }
 
 export async function alterarProduto(produto){
-    const resposta = await fetch(urlBase,{
+    const resposta = await fetch(urlBase + "/" + produto.codigo,{
         'method':"PUT",
         'headers': { 
             'Content-Type':"application/json"
         },
-        'body': JSON.stringify(produto)
+        'body': JSON.stringify({...produto, dataValidade: new Date(produto.dataValidade).toLocaleDateString()})
     });
     const resultado = await resposta.json();
     return resultado;
