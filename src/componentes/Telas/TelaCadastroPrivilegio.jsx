@@ -1,15 +1,13 @@
 import { Alert } from "react-bootstrap";
-import FormCadCategoria from "./Formularios/FormCadCategoria";
+import FormCadPrivilegios from "./Formularios/FormCadPrivilegios";
 import Pagina from "../layouts/Pagina";
 import { useState } from "react";
-import TabelaCategorias from "./Tabelas/TabelaCategorias";
-//import { categorias } from "../../dados/mockCategorias";
+import TabelaPrivilegios from "./Tabelas/TabelaPrivilegio";
 
-export default function TelaCadastroCategoria(props) {
+export default function TelaCadastroPrivilegios(props) {
     const [exibirTabela, setExibirTabela] = useState(true);
-    //const [listaDeCategorias, setListaDeCategorias] = useState(categorias);
     const [modoEdicao, setModoEdicao] = useState(false);
-    const [categoriaSelecionada, setCategoriaSelecionada] = useState({
+    const [privilegioSelecionado, setPrivilegioSelecionado] = useState({
         codigo: 0,
         descricao: ""
     });
@@ -18,18 +16,18 @@ export default function TelaCadastroCategoria(props) {
         <div>
             <Pagina>
                 <Alert className="mt-02 mb-02 success text-center" variant="success">
-                    <h2>Cadastro de Categoria</h2>
+                    <h2>Cadastro de Privilegio</h2>
                 </Alert>
                 {
                     exibirTabela ?
-                        <TabelaCategorias 
+                        <TabelaPrivilegios 
                                         setExibirTabela={setExibirTabela}
                                         setModoEdicao={setModoEdicao}
-                                        setCategoriaSelecionada={setCategoriaSelecionada} /> :
-                        <FormCadCategoria 
+                                        setPrivilegioSelecionado={setPrivilegioSelecionado} /> :
+                        <FormCadPrivilegios 
                                         setExibirTabela={setExibirTabela}
-                                        categoriaSelecionada={categoriaSelecionada}
-                                        setCategoriaSelecionada={setCategoriaSelecionada}
+                                        privilegiosSelecionado={privilegioSelecionado}
+                                        setPrivilegioSelecionado={setPrivilegioSelecionado}
                                         modoEdicao={modoEdicao}
                                         setModoEdicao={setModoEdicao} />
                 }

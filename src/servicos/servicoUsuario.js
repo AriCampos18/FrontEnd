@@ -1,38 +1,38 @@
-const urlBase = 'https://backend-produto-categoria-5wad.vercel.app/categorias';
+const urlBase = 'https://backend-produto-categoria-5wad.vercel.app/privilegios';
 
-export async function gravarCategoria(categoria){
+export async function gravarUsuario(usuario){
     const resposta = await fetch(urlBase,{
         'method':"POST",
         'headers': { 
             'Content-Type':"application/json"
         },
-        'body': JSON.stringify(categoria)
+        'body': JSON.stringify(usuario)
     });
     const resultado = await resposta.json();
     return resultado;
 }
 
-export async function alterarCategoria(categoria){
-    const resposta = await fetch(urlBase + "/" + categoria.codigo,{
+export async function alterarUsuario(usuario){
+    const resposta = await fetch(urlBase,{
         'method':"PUT",
         'headers': { 
             'Content-Type':"application/json"
         },
-        'body': JSON.stringify(categoria)
+        'body': JSON.stringify(usuario)
     });
     const resultado = await resposta.json();
     return resultado;
 }
 
-export async function excluirCategoria(categoria){
-    const resposta = await fetch(urlBase + "/" + categoria.codigo,{
+export async function excluirUsuario(usuario){
+    const resposta = await fetch(urlBase + "/" + usuario.id,{
         'method':"DELETE",
     });
     const resultado = await resposta.json();
     return resultado;
 }
 
-export async function consultarCategoria() {
+export async function consultarUsuario() {
     const resposta = await fetch(urlBase,{
         'method':"GET"
     });

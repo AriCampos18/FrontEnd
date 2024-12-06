@@ -1,27 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { consultarProduto, excluirProduto, gravarProduto, alterarProduto } from "../servicos/servicoProduto";
+import { alterarUsuario, consultarUsuario, excluirUsuario } from "../servicos/servicoUsuario";
 
-import ESTADO from "./estado.js";
+import ESTADO from "./estado";
 
-export const buscarProdutos = createAsyncThunk('buscarProdutos', async ()=>{
-    //lista de produtos
-    const resultado = await consultarProduto();
-    //se for um array/lista a consulta funcionou
+export const buscarUsuarios = createAsyncThunk('buscarUsuarios', async ()=>{
+    const resultado = await consultarUsuario();
     try {
         if (Array.isArray(resultado)){
             return {
                 "status":true,
-                "mensagem":"Produtos recuperados com sucesso",
-                "listaDeProdutos":resultado
+                "mensagem":"Usuarios recuperados com sucesso",
+                "listaDeUsuarios":resultado
             }
         }
         else
         {
             return {
                 "status":false,
-                "mensagem":"Erro ao recuperar os produtos do backend.",
-                "listaDeProdutos":[]
+                "mensagem":"Erro ao recuperar os usuarios do backend.",
+                "listaDeUsuarios":[]
             }
         }
     }
@@ -29,23 +27,19 @@ export const buscarProdutos = createAsyncThunk('buscarProdutos', async ()=>{
         return {
             "status":false,
             "mensagem":"Erro: " + erro.message,
-            "listaDeProdutos":[]
+            "listaDeUsuarios":[]
         }
     }
 });
 
-export const apagarProduto = createAsyncThunk('apagarProduto', async (produto)=>{
-//dar previsibilidade ao conteúdo do payload
-    //lista de produtos
-    console.log(produto);
-    const resultado = await excluirProduto(produto);
-    //se for um array/lista a consulta funcionou
+export const apagarUsuario = createAsyncThunk('apagarUsuario', async (usuario)=>{
+    console.log(usuario);
+    const resultado = await excluirUsuario(usuario);
     console.log(resultado);
     try {
             return {
                 "status":resultado.status,
                 "mensagem":resultado.mensagem,
-                "codigo":produto.codigo
             }
     }
     catch(erro){
@@ -55,22 +49,21 @@ export const apagarProduto = createAsyncThunk('apagarProduto', async (produto)=>
         }
     } 
 });
-
-export const inserirProduto = createAsyncThunk('inserirProduto', async (produto)=>{
+export const inserirUsuario = createAsyncThunk('inserirUsuario', async (usuario)=>{
     //Previsibilidade de comportamento ao que será retornado para a aplicação(redutor)
    
     //status e mensagem
     //sucesso => codigo do produto gerado na inclusao
     try{
-        const resultado=await gravarProduto(produto);
+        const resultado=await gravarUsuario(usuario);
         if(resultado.status)
         {
             //esse o é o payload retornado para o redutor
-            produto.codigo=resultado.codigo;
+            usuario.codigo=resultado.codigo;
             return{
                 "status":resultado.status,
                 "mensagem":resultado.mensagem,
-                "produto":produto
+                "usuario":usuario
             };
         }
         else{
@@ -88,18 +81,18 @@ export const inserirProduto = createAsyncThunk('inserirProduto', async (produto)
     }
 });
 
-export const atualizarProduto = createAsyncThunk('atualizarProduto', async (produto)=>{
+export const atualizarUsuario = createAsyncThunk('atualizarUsuario', async (usuario)=>{
     //Previsibilidade de comportamento ao que será retornado para a aplicação(redutor)
    
     //status e mensagem
     //sucesso => codigo do produto gerado na inclusao
     try{
-        const resultado=await alterarProduto(produto);
+        const resultado=await alterarUsuario(categoria);
         //esse o é o payload retornado para o redutor
         return{
             "status":resultado.status,
             "mensagem":resultado.mensagem,
-            "produto":produto
+            "categoria":categoria
         };
     } catch(erro){
         //esse o é o payload retornado para o redutor
@@ -110,99 +103,94 @@ export const atualizarProduto = createAsyncThunk('atualizarProduto', async (prod
     }
 });
 
-const produtoReducer = createSlice({
-    name:'produto',
+const usuarioReducer = createSlice({
+    name:'usuario',
     initialState:{
         estado: ESTADO.OCIOSO,
         mensagem:"",
-        listaDeProdutos:[]
+        listaDeUsuarios:[]
     },
     reducers:{},
     extraReducers:(builder)=> {
-        builder.addCase(buscarProdutos.pending, (state, action) =>{
+        builder.addCase(buscarUsuarios.pending, (state, action) =>{
             state.estado=ESTADO.PENDENTE
-            state.mensagem="Processando requisição (buscando produtos)"
+            state.mensagem="Processando requisição (buscando usuarios)"
         })
-        .addCase(buscarProdutos.fulfilled, (state, action) =>{
+        .addCase(buscarUsuarios.fulfilled, (state, action) =>{
           if (action.payload.status){
             state.estado=ESTADO.OCIOSO;
             state.mensagem=action.payload.mensagem;
-            state.listaDeProdutos=action.payload.listaDeProdutos;
+            state.listaDeUsuarios=action.payload.listaDeUsuarios;
           } 
           else{
             state.estado=ESTADO.ERRO;
             state.mensagem = action.payload.mensagem;
-            state.listaDeProdutos=action.payload.listaDeProdutos;
+            state.listaDeUsuarios=action.payload.listaDeUsuarios;
           } 
         })
-        .addCase(buscarProdutos.rejected, (state, action) =>{
+        .addCase(buscarUsuarios.rejected, (state, action) =>{
             state.estado=ESTADO.ERRO;
             state.mensagem = action.payload.mensagem;
-            state.listaDeProdutos=action.payload.listaDeProdutos;
+            state.listaDeUsuarios=action.payload.listaDeUsuarios;
         })
-        .addCase(apagarProduto.pending, (state,action) =>{
+        .addCase(apagarUsuario.pending, (state,action) =>{
             state.estado=ESTADO.PENDENTE;
-            state.mensagem="Processando a requsição(excluindo o produto do backend";
+            state.mensagem="Processando a requsição(excluindo o usuario do backend";
         })
-        .addCase(apagarProduto.fulfilled,(state,action) =>{
+        .addCase(apagarUsuario.fulfilled,(state,action) =>{
             state.estado=ESTADO.OCIOSO;
             state.mensagem=action.payload.mensagem;
             if(action.payload.status){                        
-                state.listaDeProdutos=state.listaDeProdutos.filter((item)=> item.codigo !== action.payload.codigo);
-                //altera a lista de produtos
+                state.listaDeUsuarios=state.listaDeUsuarios.filter((item)=> item.codigo !== action.payload.id);
             }
             else{
                 state.estado=ESTADO.ERRO;
                 state.mensagem=action.payload.mensagem;
             }
         })
-        .addCase(apagarProduto.rejected,(state,action)=>{
+        .addCase(apagarUsuario.rejected,(state,action)=>{
             state.estado=ESTADO.ERRO;
-            state.mensagem=action.payload.mensagem;//action.payload.mensagem;
+            state.mensagem=action.payload.mensagem;
         })
-        .addCase(inserirProduto.pending, (state, action)=>{
+        .addCase(inserirUsuario.pending, (state, action)=>{
             state.estado=ESTADO.PENDENTE;
-            state.mensagem="Processando a requsição(incluindo o produto no backend";
+            state.mensagem="Processando a requsição(incluindo o usuario no backend";
         })
-        .addCase(inserirProduto.fulfilled,(state,action) =>{
+        .addCase(inserirUsuario.fulfilled,(state,action) =>{
             if(action.payload.status){     
-                //sucesso da inclusão do produto                  
                 state.estado=ESTADO.OCIOSO; 
                 state.mensagem=action.payload.mensagem;
-                state.listaDeProdutos.push(action.payload.produto);
-                //altera a lista de produtos
+                state.listaDeUsuarios.push(action.payload.usuario);
             }
             else{
                 state.estado=ESTADO.ERRO;
                 state.mensagem=action.payload.mensagem;
             }
         })
-        .addCase(inserirProduto.rejected,(state,action)=>{
+        .addCase(inserirUsuario.rejected,(state,action)=>{
             state.estado=ESTADO.ERRO;
-            state.mensagem=action.payload.mensagem;//action.payload.mensagem;
+            state.mensagem=action.payload.mensagem;
         })
-        .addCase(atualizarProduto.pending, (state,action)=>{
+        .addCase(atualizarUsuario.pending, (state,action)=>{
             state.estado=ESTADO.PENDENTE;
-            state.mensagem="Processando a requsição(alterando o produto no backend";
+            state.mensagem="Processando a requsição(alterando o usuario no backend";
         })
-        .addCase(atualizarProduto.fulfilled, (state,action)=>{
+        .addCase(atualizarUsuario.fulfilled, (state,action)=>{
             if(action.payload.status){     
-                //sucesso da inclusão do produto                  
                 state.estado=ESTADO.OCIOSO; 
                 state.mensagem=action.payload.mensagem;
-                state.listaDeProdutos=state.listaDeProdutos.map((item)=> item.codigo===action.payload.produto.codigo ? action.payload.produto : item);
-                //altera a lista de produtos
+                state.listaDeUsuarios=state.listaDeUsuarios.map((item)=> item.codigo===action.payload.usuario.id ? action.payload.usuario : item);
             }
             else{
                 state.estado=ESTADO.ERRO;
                 state.mensagem=action.payload.mensagem;
             }
         })
-        .addCase(atualizarProduto.rejected,(state,action)=>{
+        .addCase(atualizarUsuario.rejected,(state,action)=>{
             state.estado=ESTADO.ERRO;
-            state.mensagem=action.payload.mensagem;//action.payload.mensagem;
+            state.mensagem=action.payload.mensagem;
         })
     }
 });
 
-export default produtoReducer.reducer;
+export default usuarioReducer.reducer;

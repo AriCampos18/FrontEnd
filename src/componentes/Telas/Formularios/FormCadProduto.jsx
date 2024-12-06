@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from 'react';
 import { consultarCategoria } from '../../../servicos/servicoCategoria';
 import { alterarProduto } from '../../../servicos/servicoProduto';
 import ESTADO from '../../../redux/estado.js';
-
 import toast, {Toaster} from 'react-hot-toast';
 import {useSelector, useDispatch } from 'react-redux';
 import { inserirProduto, atualizarProduto } from '../../../redux/produtoReducer';
@@ -236,11 +235,8 @@ export default function FormCadProdutos(props) {
                             type="date"
                             id="dataValidade"
                             name="dataValidade"
-                            value={props.modoEdicao ? produto.dataValidade.substr(0,10) : ""}
-                            onCha={(evento) =>{
-                                const data = new Date(evento.target.value);
-                                setProduto({...produto, dataValidade: data.toLocaleDateString()});
-                            }}
+                            value={produto.dataValidade}
+                            onChange={manipularMudanca}
                         />
                         <Form.Control.Feedback type="invalid">Por favor, informe a data de validade do produto!</Form.Control.Feedback>
                     </Form.Group>
@@ -249,6 +245,7 @@ export default function FormCadProdutos(props) {
                         <Form.Select id='categoria' 
                                     name='categoria'
                                     onChange={selecionarCategoria}>
+                                    <option value="">Selecione uma categoria</option>
                             {// criar em tempo de execução as categorias existentes no banco de dados
                                 categorias.map((categoria) =>{
                                     return <option value={categoria.codigo}>

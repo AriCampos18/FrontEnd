@@ -1,27 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { consultarProduto, excluirProduto, gravarProduto, alterarProduto } from "../servicos/servicoProduto";
+import { consultarCliente, excluirCliente, gravarCliente, alterarCliente } from "../servicos/servicoCliente.js";
 
 import ESTADO from "./estado.js";
 
-export const buscarProdutos = createAsyncThunk('buscarProdutos', async ()=>{
+export const buscarClientes = createAsyncThunk('buscarClientes', async ()=>{
     //lista de produtos
-    const resultado = await consultarProduto();
+    const resultado = await consultarCliente();
     //se for um array/lista a consulta funcionou
+
     try {
         if (Array.isArray(resultado)){
+            console.log(resultado);
             return {
                 "status":true,
-                "mensagem":"Produtos recuperados com sucesso",
-                "listaDeProdutos":resultado
+                "mensagem":"Clientes recuperados com sucesso",
+                "listaDeClientes":resultado
             }
         }
         else
         {
             return {
                 "status":false,
-                "mensagem":"Erro ao recuperar os produtos do backend.",
-                "listaDeProdutos":[]
+                "mensagem":"Erro ao recuperar os clientes do backend.",
+                "listaDeClientes":[]
             }
         }
     }
@@ -29,23 +31,23 @@ export const buscarProdutos = createAsyncThunk('buscarProdutos', async ()=>{
         return {
             "status":false,
             "mensagem":"Erro: " + erro.message,
-            "listaDeProdutos":[]
+            "listaDeClientes":[]
         }
     }
 });
 
-export const apagarProduto = createAsyncThunk('apagarProduto', async (produto)=>{
+export const apagarCliente = createAsyncThunk('apagarCliente', async (cliente)=>{
 //dar previsibilidade ao conteúdo do payload
     //lista de produtos
-    console.log(produto);
-    const resultado = await excluirProduto(produto);
+    console.log(cliente);
+    const resultado = await excluirCliente(cliente);
     //se for um array/lista a consulta funcionou
     console.log(resultado);
     try {
             return {
                 "status":resultado.status,
                 "mensagem":resultado.mensagem,
-                "codigo":produto.codigo
+                "cpf":cliente.cpf
             }
     }
     catch(erro){
@@ -56,21 +58,21 @@ export const apagarProduto = createAsyncThunk('apagarProduto', async (produto)=>
     } 
 });
 
-export const inserirProduto = createAsyncThunk('inserirProduto', async (produto)=>{
+export const inserirCliente = createAsyncThunk('inserirCliente', async (cliente)=>{
     //Previsibilidade de comportamento ao que será retornado para a aplicação(redutor)
    
     //status e mensagem
     //sucesso => codigo do produto gerado na inclusao
     try{
-        const resultado=await gravarProduto(produto);
+        const resultado=await gravarCliente(cliente);
         if(resultado.status)
         {
             //esse o é o payload retornado para o redutor
-            produto.codigo=resultado.codigo;
+            cliente.cpf=resultado.cpf;
             return{
                 "status":resultado.status,
                 "mensagem":resultado.mensagem,
-                "produto":produto
+                "cliente":cliente
             };
         }
         else{
@@ -88,18 +90,18 @@ export const inserirProduto = createAsyncThunk('inserirProduto', async (produto)
     }
 });
 
-export const atualizarProduto = createAsyncThunk('atualizarProduto', async (produto)=>{
+export const atualizarCliente = createAsyncThunk('atualizarCliente', async (cliente)=>{
     //Previsibilidade de comportamento ao que será retornado para a aplicação(redutor)
    
     //status e mensagem
     //sucesso => codigo do produto gerado na inclusao
     try{
-        const resultado=await alterarProduto(produto);
+        const resultado=await alterarCliente(cliente);
         //esse o é o payload retornado para o redutor
         return{
             "status":resultado.status,
             "mensagem":resultado.mensagem,
-            "produto":produto
+            "cliente":cliente
         };
     } catch(erro){
         //esse o é o payload retornado para o redutor
@@ -110,45 +112,45 @@ export const atualizarProduto = createAsyncThunk('atualizarProduto', async (prod
     }
 });
 
-const produtoReducer = createSlice({
-    name:'produto',
+const clienteReducer = createSlice({
+    name:'cliente',
     initialState:{
         estado: ESTADO.OCIOSO,
         mensagem:"",
-        listaDeProdutos:[]
+        listaDeClientes:[]
     },
     reducers:{},
     extraReducers:(builder)=> {
-        builder.addCase(buscarProdutos.pending, (state, action) =>{
+        builder.addCase(buscarClientes.pending, (state, action) =>{
             state.estado=ESTADO.PENDENTE
-            state.mensagem="Processando requisição (buscando produtos)"
+            state.mensagem="Processando requisição (buscando clientes)"
         })
-        .addCase(buscarProdutos.fulfilled, (state, action) =>{
-          if (action.payload.status){
+        .addCase(buscarClientes.fulfilled, (state, action) =>{
+            if (action.payload.status){
             state.estado=ESTADO.OCIOSO;
             state.mensagem=action.payload.mensagem;
-            state.listaDeProdutos=action.payload.listaDeProdutos;
-          } 
-          else{
+            state.listaDeClientes=action.payload.listaDeClientes;
+            } 
+            else{
+                state.estado=ESTADO.ERRO;
+                state.mensagem = action.payload.mensagem;
+                state.listaDeClientes=action.payload.listaDeClientes;
+            } 
+        })
+        .addCase(buscarClientes.rejected, (state, action) =>{
             state.estado=ESTADO.ERRO;
             state.mensagem = action.payload.mensagem;
-            state.listaDeProdutos=action.payload.listaDeProdutos;
-          } 
+            state.listaDeClientes=action.payload.listaDeClientes;
         })
-        .addCase(buscarProdutos.rejected, (state, action) =>{
-            state.estado=ESTADO.ERRO;
-            state.mensagem = action.payload.mensagem;
-            state.listaDeProdutos=action.payload.listaDeProdutos;
-        })
-        .addCase(apagarProduto.pending, (state,action) =>{
+        .addCase(apagarCliente.pending, (state,action) =>{
             state.estado=ESTADO.PENDENTE;
-            state.mensagem="Processando a requsição(excluindo o produto do backend";
+            state.mensagem="Processando a requsição(excluindo o cliente do backend";
         })
-        .addCase(apagarProduto.fulfilled,(state,action) =>{
+        .addCase(apagarCliente.fulfilled,(state,action) =>{
             state.estado=ESTADO.OCIOSO;
             state.mensagem=action.payload.mensagem;
             if(action.payload.status){                        
-                state.listaDeProdutos=state.listaDeProdutos.filter((item)=> item.codigo !== action.payload.codigo);
+                state.listaDeClientes=state.listaDeClientes.filter((item)=> item.cpf !== action.payload.cpf);
                 //altera a lista de produtos
             }
             else{
@@ -156,20 +158,20 @@ const produtoReducer = createSlice({
                 state.mensagem=action.payload.mensagem;
             }
         })
-        .addCase(apagarProduto.rejected,(state,action)=>{
+        .addCase(apagarCliente.rejected,(state,action)=>{
             state.estado=ESTADO.ERRO;
             state.mensagem=action.payload.mensagem;//action.payload.mensagem;
         })
-        .addCase(inserirProduto.pending, (state, action)=>{
+        .addCase(inserirCliente.pending, (state, action)=>{
             state.estado=ESTADO.PENDENTE;
-            state.mensagem="Processando a requsição(incluindo o produto no backend";
+            state.mensagem="Processando a requsição(incluindo o cliente no backend";
         })
-        .addCase(inserirProduto.fulfilled,(state,action) =>{
+        .addCase(inserirCliente.fulfilled,(state,action) =>{
             if(action.payload.status){     
                 //sucesso da inclusão do produto                  
                 state.estado=ESTADO.OCIOSO; 
                 state.mensagem=action.payload.mensagem;
-                state.listaDeProdutos.push(action.payload.produto);
+                state.listaDeClientes.push(action.payload.cliente);
                 //altera a lista de produtos
             }
             else{
@@ -177,20 +179,20 @@ const produtoReducer = createSlice({
                 state.mensagem=action.payload.mensagem;
             }
         })
-        .addCase(inserirProduto.rejected,(state,action)=>{
+        .addCase(inserirCliente.rejected,(state,action)=>{
             state.estado=ESTADO.ERRO;
             state.mensagem=action.payload.mensagem;//action.payload.mensagem;
         })
-        .addCase(atualizarProduto.pending, (state,action)=>{
+        .addCase(atualizarCliente.pending, (state,action)=>{
             state.estado=ESTADO.PENDENTE;
-            state.mensagem="Processando a requsição(alterando o produto no backend";
+            state.mensagem="Processando a requsição(alterando o cliente no backend";
         })
-        .addCase(atualizarProduto.fulfilled, (state,action)=>{
+        .addCase(atualizarCliente.fulfilled, (state,action)=>{
             if(action.payload.status){     
                 //sucesso da inclusão do produto                  
                 state.estado=ESTADO.OCIOSO; 
                 state.mensagem=action.payload.mensagem;
-                state.listaDeProdutos=state.listaDeProdutos.map((item)=> item.codigo===action.payload.produto.codigo ? action.payload.produto : item);
+                state.listaDeClientes=state.listaDeClientes.map((item)=> item.cpf===action.payload.cliente.cpf ? action.payload.cliente : item);
                 //altera a lista de produtos
             }
             else{
@@ -198,11 +200,11 @@ const produtoReducer = createSlice({
                 state.mensagem=action.payload.mensagem;
             }
         })
-        .addCase(atualizarProduto.rejected,(state,action)=>{
+        .addCase(atualizarCliente.rejected,(state,action)=>{
             state.estado=ESTADO.ERRO;
             state.mensagem=action.payload.mensagem;//action.payload.mensagem;
         })
     }
 });
 
-export default produtoReducer.reducer;
+export default clienteReducer.reducer;
