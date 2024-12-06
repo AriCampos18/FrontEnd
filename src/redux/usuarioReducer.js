@@ -92,7 +92,7 @@ export const atualizarUsuario = createAsyncThunk('atualizarUsuario', async (usua
         return{
             "status":resultado.status,
             "mensagem":resultado.mensagem,
-            "categoria":categoria
+            "usuario":usuario
         };
     } catch(erro){
         //esse o é o payload retornado para o redutor
