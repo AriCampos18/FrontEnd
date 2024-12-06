@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/FrontEndProdutoCategoria/static/css/main.d221dc40.css",
+    "main.js": "/FrontEndProdutoCategoria/static/js/main.b5199928.js",
+    "static/media/pagina404.png": "/FrontEndProdutoCategoria/static/media/pagina404.4bf0805d8d55a31c5142.png",
+    "index.html": "/FrontEndProdutoCategoria/index.html",
+    "main.d221dc40.css.map": "/FrontEndProdutoCategoria/static/css/main.d221dc40.css.map",
+    "main.b5199928.js.map": "/FrontEndProdutoCategoria/static/js/main.b5199928.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d221dc40.css",
+    "static/js/main.b5199928.js"
+  ]
+}
