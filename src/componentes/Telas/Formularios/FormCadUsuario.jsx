@@ -2,7 +2,7 @@ import { Button, Spinner, Col, Form, InputGroup,
     Row, Alert
 } from 'react-bootstrap';
 import { useState, useEffect, useRef } from 'react';
-import { consultarPrivilegio } from "../../../servicos/servicoPrivilegio.js"
+import { consultarPrivilegio } from "../../../servicos/servicoPrivilegio"
 import ESTADO from '../../../redux/estado.js';
 import toast, {Toaster} from 'react-hot-toast';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +11,7 @@ import { inserirUsuario, atualizarUsuario } from '../../../redux/usuarioReducer'
 export default function FormCadUsuario(props) {
 const [usuario, setUsuario] = useState(props.usuarioSelecionado);
 const [formValidado, setFormValidado] = useState(false);
-const [privilegios, setPrivilegios] = useState([]);
+const [privilegio, setPrivilegios] = useState([]);
 const [temPrivilegios, setTemPrivilegios] = useState(false);
 const {estado,mensagem,listaDeUsuarios}=useSelector((state)=>state.usuario);
 const [mensagemExibida, setMensagemExibida]= useState("");
@@ -143,7 +143,6 @@ else if(estado==ESTADO.OCIOSO){
                <Form.Group as={Col} md="8">
                    <Form.Label>Nome:</Form.Label>
                    <InputGroup hasValidation>
-                       <InputGroup.Text id="nome">@</InputGroup.Text>
                        <Form.Control
                            type="text"
                            id="nome"
@@ -233,7 +232,7 @@ else if(estado==ESTADO.OCIOSO){
                                onChange={selecionarPrivilegio}>
                                <option value="">Selecione um privilegio</option>
                        {// criar em tempo de execução as categorias existentes no banco de dados
-                           privilegios.map((privilegio) =>{
+                           privilegio.map((privilegio) =>{
                                return <option value={privilegio.codigo}>
                                            {privilegio.descricao}
                                    </option>

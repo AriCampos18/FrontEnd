@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import produtoReducer from "./produtoReducer";
-import clienteReducer from "./produtoReducer";
+import clienteReducer from "./clienteReducer";
 import fornecedorReducer from "./fornecedorReducer";
 import categoriaReducer from "./categoriaReducer";
 import usuarioReducer from "./usuarioReducer";

@@ -76,7 +76,7 @@ export default function TabelaUsuarios(props) {
                                             <td>{usuario.senha}</td>
                                             <td>{usuario.idade}</td>
                                             <td>{usuario.endereco}</td>
-                                            <td>{usuario.privilegio.descricao}</td>
+                                            <td>{usuario?.privilegio?.descricao}</td>
                                             <td>
                                                 <Button onClick={()=>{
                                                     editarUsuario(usuario);

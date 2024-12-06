@@ -1,4 +1,4 @@
-const urlBase = 'https://backend-produto-categoria-5wad.vercel.app/privilegios';
+const urlBase = 'https://backend-produto-categoria-5wad.vercel.app/usuarios';
 
 export async function gravarUsuario(usuario){
     const resposta = await fetch(urlBase,{
