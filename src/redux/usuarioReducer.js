@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { alterarUsuario, consultarUsuario, excluirUsuario } from "../servicos/servicoUsuario";
+import { gravarUsuario, alterarUsuario, consultarUsuario, excluirUsuario } from "../servicos/servicoUsuario";
 
 import ESTADO from "./estado";
 
 export const buscarUsuarios = createAsyncThunk('buscarUsuarios', async ()=>{
     const resultado = await consultarUsuario();
+    console.log(resultado);
     try {
         if (Array.isArray(resultado)){
             return {
@@ -33,9 +34,7 @@ export const buscarUsuarios = createAsyncThunk('buscarUsuarios', async ()=>{
 });
 
 export const apagarUsuario = createAsyncThunk('apagarUsuario', async (usuario)=>{
-    console.log(usuario);
     const resultado = await excluirUsuario(usuario);
-    console.log(resultado);
     try {
             return {
                 "status":resultado.status,
@@ -59,7 +58,7 @@ export const inserirUsuario = createAsyncThunk('inserirUsuario', async (usuario)
         if(resultado.status)
         {
             //esse o é o payload retornado para o redutor
-            usuario.codigo=resultado.codigo;
+            usuario.id=resultado.id;
             return{
                 "status":resultado.status,
                 "mensagem":resultado.mensagem,
@@ -87,7 +86,7 @@ export const atualizarUsuario = createAsyncThunk('atualizarUsuario', async (usua
     //status e mensagem
     //sucesso => codigo do produto gerado na inclusao
     try{
-        const resultado=await alterarUsuario(categoria);
+        const resultado=await alterarUsuario(usuario);
         //esse o é o payload retornado para o redutor
         return{
             "status":resultado.status,
@@ -141,7 +140,7 @@ const usuarioReducer = createSlice({
             state.estado=ESTADO.OCIOSO;
             state.mensagem=action.payload.mensagem;
             if(action.payload.status){                        
-                state.listaDeUsuarios=state.listaDeUsuarios.filter((item)=> item.codigo !== action.payload.id);
+                state.listaDeUsuarios=state.listaDeUsuarios.filter((item)=> item.id !== action.payload.id);
             }
             else{
                 state.estado=ESTADO.ERRO;
@@ -179,7 +178,7 @@ const usuarioReducer = createSlice({
             if(action.payload.status){     
                 state.estado=ESTADO.OCIOSO; 
                 state.mensagem=action.payload.mensagem;
-                state.listaDeUsuarios=state.listaDeUsuarios.map((item)=> item.codigo===action.payload.usuario.id ? action.payload.usuario : item);
+                state.listaDeUsuarios=state.listaDeUsuarios.map((item)=> item.id===action.payload.usuario.id ? action.payload.usuario : item);
             }
             else{
                 state.estado=ESTADO.ERRO;

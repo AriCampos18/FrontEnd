@@ -13,7 +13,6 @@ export default function TabelaClientes(props) {
         despachante(buscarClientes());
     },[despachante]); //ciclo de vida de atualização do componente
 
-    console.log(listaDeClientes);
 
     function editarCliente(cliente){
         props.setModoEdicao(true);

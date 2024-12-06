@@ -20,7 +20,7 @@ export default function TelaCadastroCliente(props) {
     return (
         <div>
             <Pagina>
-                |<Alert className="mt-02 mb-02 success text-center" variant="success">
+                <Alert className="mt-02 mb-02 success text-center" variant="success">
                     <h2>
                         Cadastro de Clientes
                     </h2>

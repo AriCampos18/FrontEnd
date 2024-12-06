@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import ESTADO from "../../../redux/estado";
 
 export default function TabelaPrivilegios(props) {
-    const { estado, mensagem, listaDePrivilegios = [] } = useSelector((state) => state.produto || {});
+    const { estado, mensagem, listaDePrivilegios } = useSelector((state) => state.privilegio);
     const despachante = useDispatch();
 
     useEffect(()=>{

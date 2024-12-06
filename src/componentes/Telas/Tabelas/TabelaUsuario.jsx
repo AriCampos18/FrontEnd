@@ -1,26 +1,28 @@
-import { Alert, Button, Container, Spinner, Table } from "react-bootstrap";
+import { Button, Container, Table, Spinner, Alert} from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { buscarUsuarios, apagarUsuario } from "../../../redux/usuarioReducer.js";
+import {  apagarUsuario, buscarUsuarios } from "../../../redux/usuarioReducer";
 import { useEffect } from "react";
 
-import ESTADO from "../../../redux/estado";
+import ESTADO from "../../../redux/estado.js";
 
 export default function TabelaUsuarios(props) {
+
     const {estado, mensagem, listaDeUsuarios} = useSelector(state => state.usuario);
-    const despachante = useDispatch();
-    
+    const despachante = useDispatch(); //consegue enviar uma action ao estado a partir da interface
+
     useEffect(()=>{
         despachante(buscarUsuarios());
-    },[despachante]); 
+    },[despachante]); //ciclo de vida de atualização do componente
+
     function editarUsuario(usuario){
         props.setModoEdicao(true);
-        props.setUsuarioSelecionado(usuario)
+        props.setUsuarioSelecionado(usuario);
         props.setExibirTabela(false);
     }
 
     function excluirUsuarioFrontEnd(usuario){
         if(window.confirm("Deseja realmente excluir o usuario " + usuario.nome)){
-            despachante(apagarUsuario(usuario));
+            despachante(apagarUsuario(usuario)); //envia a action apagarProduto
         }
     }
 
@@ -33,11 +35,14 @@ export default function TabelaUsuarios(props) {
         );
     }
     else if (estado === ESTADO.ERRO){
-        <div>
-            <Alert variant="danger">{ mensagem }</Alert>
-        </div>
+        return(
+            <div>
+                <Alert variant="danger">{ mensagem }</Alert>
+            </div>
+        );
     }
-    else if (ESTADO.OCIOSO) {
+    else if (estado===ESTADO.OCIOSO){
+
         return (
             <>
                 <Container>
@@ -49,20 +54,22 @@ export default function TabelaUsuarios(props) {
                     </Button>
                     <Table striped bordered hover>
                         <thead>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Senha</th>
-                            <th>Idade</th>
-                            <th>Endereço</th>
-                            <th>Privilegio</th>
-                            <th>Ações</th>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>E-Mail</th>
+                                <th>Senha</th>
+                                <th>Idade</th>
+                                <th>Endereco</th>
+                                <th>Privilegio</th>
+                                <th>Ações</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {
                                 listaDeUsuarios?.map((usuario) => {
                                     return (
-                                        <tr>
+                                        <tr> 
                                             <td>{usuario.id}</td>
                                             <td>{usuario.nome}</td>
                                             <td>{usuario.email}</td>
@@ -76,7 +83,7 @@ export default function TabelaUsuarios(props) {
                                                 }}variant="warning">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                                        <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                                     </svg>
                                                 </Button> <Button onClick={ ()=> {
                                                     excluirUsuarioFrontEnd(usuario);
@@ -97,5 +104,6 @@ export default function TabelaUsuarios(props) {
                 </Container>
             </>
         );
+
     }
 }

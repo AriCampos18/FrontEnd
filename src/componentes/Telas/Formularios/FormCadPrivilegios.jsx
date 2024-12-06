@@ -1,42 +1,44 @@
 import { useState, useEffect } from 'react';
-import { Button, Spinner, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import { Button, Spinner, Col, Form, InputGroup, Row, Alert } from 'react-bootstrap';
 import { gravarPrivilegio } from "../../../servicos/servicoPrivilegio";
-
+import { useDispatch, useSelector } from 'react-redux';
 import toast, {Toaster} from 'react-hot-toast';
+import { atualizarPrivilegio, inserirPrivilegio } from '../../../redux/privilegioReducer';
+import ESTADO from '../../../redux/estado';
 
 export default function FormCadPrivilegios(props) {
     const [privilegio, setPrivilegio] = useState(props.privilegioSelecionado);
     const [formValidado, setFormValidado] = useState(false);
-
-    useEffect(() => {
-        setPrivilegio(props.privilegioSelecionado);
-    }, [props.privilegioSelecionado]);
+    const {estado,mensagem,listaDePrivilegios}=useSelector(state=>state.privilegio);
+    const [mensagemExibida, setMensagemExibida]= useState("");
+    const despachante = useDispatch();
     
 
     function manipularSubmissao(evento) {
         const form = evento.currentTarget;
         if (form.checkValidity()) {
             if (!props.modoEdicao) {
-                gravarPrivilegio(privilegio)
-                .then((resultado)=>{
-                    if (resultado.status){
-                        props.setExibirTabela(true);
-                    }
-                    else{
-                        toast.error(resultado.mensagem);
-                    }
-                });
+                despachante(inserirPrivilegio(privilegio));
+                setMensagemExibida(mensagem);
+                setTimeout(()=>{
+                    setMensagemExibida("");
+                    setPrivilegio({
+                        codigo:0,
+                        descricao:""
+                    });
+                },5000);
             } 
             else {
-                props.setListaDePrivilegios(props.listaDePrivilegios.map((item) => 
-                    item.codigo !== privilegio.codigo ? item : privilegio
-                ));
-                props.setModoEdicao(false);
-                props.setPrivilegioSelecionado({ 
-                    codigo: 0, 
-                    descricao: "" 
-                });
-                props.setExibirTabela(true);
+                despachante(atualizarPrivilegio(privilegio));
+                setMensagemExibida(mensagem);
+                setTimeout(()=>{
+                    props.setModoEdicao(false);
+                    props.setPrivilegioSelecionado({
+                        codigo:0,
+                        descricao:""
+                    });
+                    props.setExibirTabela(true);
+                },5000);
             }
         } 
         else {
@@ -47,12 +49,32 @@ export default function FormCadPrivilegios(props) {
     }
 
     function manipularMudanca(evento) {
-        const { name, value } = evento.target;
-        setPrivilegio({ ...privilegio, [name]: value });
+        const elemento = evento.target.name;
+        const valor = evento.target.value;
+        setPrivilegio({ ...privilegio, [elemento]: valor });
     }
 
-    return (
-        <Form noValidate validated={formValidado} onSubmit={manipularSubmissao}>
+    if(estado==ESTADO.PENDENTE){
+        return (
+            <div>
+                <Spinner animation="border" role="status"></Spinner>
+                <Alert variant="primary">{ mensagem }</Alert>
+            </div>
+        );
+     }
+     else if(estado==ESTADO.ERRO){
+        return(
+            <div>
+                <Alert variant="danger">{ mensagem }</Alert>
+                <Button onClick={() => {
+                            props.setExibirTabela(true);
+                        }}>Voltar</Button>
+            </div>
+        );
+     }
+     else if(estado==ESTADO.OCIOSO){
+        return (
+            <Form noValidate validated={formValidado} onSubmit={manipularSubmissao}>
             <Row className="mb-4">
                 <Form.Group as={Col} md="4">
                     <Form.Label>Código</Form.Label>
@@ -97,4 +119,5 @@ export default function FormCadPrivilegios(props) {
             <Toaster position="top-right"/>
         </Form>
     );
+}
 }

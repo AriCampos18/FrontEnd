@@ -13,7 +13,7 @@ export const buscarCategorias = createAsyncThunk('buscarCategorias', async ()=>{
             return {
                 "status":true,
                 "mensagem":"Categorias recuperados com sucesso",
-                "listaDeCategorias": resultado,
+                "listaDeCategorias": resultado
             }
         }
         else
@@ -37,10 +37,10 @@ export const buscarCategorias = createAsyncThunk('buscarCategorias', async ()=>{
 export const apagarCategoria = createAsyncThunk('apagarCategoria', async (categoria)=>{
 //dar previsibilidade ao conteúdo do payload
     //lista de categorias
-    console.log(categoria);
     const resultado = await excluirCategoria(categoria);
     //se for um array/lista a consulta funcionou
     console.log(resultado);
+    console.log(categoria);
     try {
             return {
                 "status":resultado.status,

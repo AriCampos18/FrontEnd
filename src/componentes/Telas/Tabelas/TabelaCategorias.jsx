@@ -7,7 +7,7 @@ import ESTADO from "../../../redux/estado";
 
 export default function TabelaCategorias(props) {
 
-    const { estado, mensagem, listaDeCategorias = [] } = useSelector((state) => state.produto || {});
+    const { estado, mensagem, listaDeCategorias } = useSelector((state) => state.categoria);
 
 
     const despachante = useDispatch();

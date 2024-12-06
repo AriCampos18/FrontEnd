@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { consultarPrivilegio, excluirPrivilegio } from "../servicos/servicoPrivilegio";
+import { alterarPrivilegio, consultarPrivilegio, excluirPrivilegio, gravarPrivilegio } from "../servicos/servicoPrivilegio";
 
 import ESTADO from "./estado";
 
@@ -48,6 +48,60 @@ export const apagarPrivilegio = createAsyncThunk('apagarPrivilegio', async (priv
             "mensagem":"Erro: " + erro.message,
         }
     } 
+});
+export const inserirPrivilegio = createAsyncThunk('inserirPrivilegio', async (privilegio)=>{
+    //Previsibilidade de comportamento ao que será retornado para a aplicação(redutor)
+   
+    //status e mensagem
+    //sucesso => codigo do produto gerado na inclusao
+    try{
+        const resultado=await gravarPrivilegio(privilegio);
+        if(resultado.status)
+        {
+            //esse o é o payload retornado para o redutor
+            privilegio.codigo=resultado.codigo;
+            console.log(privilegio.codigo);
+            return{
+                "status":resultado.status,
+                "mensagem":resultado.mensagem,
+                "privilegio":privilegio
+            };
+        }
+        else{
+            return{
+                "status":resultado.status,
+                "mensagem":resultado.mensagem
+            };
+        }
+    } catch(erro){
+        //esse o é o payload retornado para o redutor
+        return{
+            "status":false,
+            "mensagem":"Nao foi possivel se comunicar com o backend" + erro.message
+        };
+    }
+});
+
+export const atualizarPrivilegio = createAsyncThunk('atualizarPrivilegio', async (privilegio)=>{
+    //Previsibilidade de comportamento ao que será retornado para a aplicação(redutor)
+   
+    //status e mensagem
+    //sucesso => codigo do produto gerado na inclusao
+    try{
+        const resultado=await alterarPrivilegio(privilegio);
+        //esse o é o payload retornado para o redutor
+        return{
+            "status":resultado.status,
+            "mensagem":resultado.mensagem,
+            "privilegio":privilegio
+        };
+    } catch(erro){
+        //esse o é o payload retornado para o redutor
+        return{
+            "status":false,
+            "mensagem":"Nao foi possivel se comunicar com o backend" + erro.message
+        };
+    }
 });
 
 const privilegioReducer = createSlice({
